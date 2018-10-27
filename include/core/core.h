@@ -25,6 +25,7 @@
 #pragma once
 
 #include "mem.h"
+#include "term.h"
 
 /* terminate execution with a message and the errno value */
 void die(const char* msg);

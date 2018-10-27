@@ -42,7 +42,8 @@ LIBRARY=lib/libcore.a
 # object files
 OBJECTS=\
 	obj/core.o \
-	obj/mem.o
+	obj/mem.o \
+	obj/term_ansi.o
 
 all: $(LIBRARY)
 
