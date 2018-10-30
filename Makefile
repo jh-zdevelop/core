@@ -30,42 +30,57 @@ RMDIR=rmdir
 AR=ar
 INSTALL=install
 
+# paths
+SRCDIR=src
+OBJDIR=obj
+LIBDIR=lib
+INCLUDEDIR=./include/core
+INSTALLINCLUDEDIR=/usr/local/include/core
+INSTALLLIBDIR=/usr/local/lib
+
 # flags
-CFLAGS=-Wall -O2 -I./include/core
+CFLAGS=-Wall -O2 -I$(INCLUDEDIR)
 RMFLAGS=-f
 MKDIRFLAGS=-p
 RMDIRFLAGS=
 ARFLAGS=-r
+INSTALLDIRFLAGS=-d
+INSTALLFLAGS=-cp -m 0644
 
 # outputs
-LIBRARY=lib/libcore.a
+LIBNAME=libcore.a
+LIBRARY=$(LIBDIR)/$(LIBNAME)
 
 # object files
 OBJECTS=\
-	obj/core.o \
-	obj/mem.o \
-	obj/term_ansi.o
+	$(OBJDIR)/core.o \
+	$(OBJDIR)/mem.o \
+	$(OBJDIR)/term_ansi.o
 
 all: $(LIBRARY)
 
 clean:
 	$(RM) $(LIBRARY) $(OBJECTS)
-	@$(RMDIR) $(RMDIRFLAGS) lib
-	@$(RMDIR) $(RMDIRFLAGS) obj
+	@$(RMDIR) $(RMDIRFLAGS) $(LIBDIR)
+	@$(RMDIR) $(RMDIRFLAGS) $(OBJDIR)
 
 install: $(LIBRARY)
-	$(INSTALL) -d /usr/local/include/core
-	$(INSTALL) -cp -m 0644 ./include/core/*.h /usr/local/include/core
-	$(INSTALL) -cp -m 0644 $(LIBRARY) /usr/local/lib
+	$(INSTALL) $(INSTALLDIRFLAGS) $(INSTALLINCLUDEDIR)
+	$(INSTALL) $(INSTALLFLAGS) $(INCLUDEDIR)/*.h $(INSTALLINCLUDEDIR)
+	$(INSTALL) $(INSTALLFLAGS) $(LIBRARY) $(INSTALLLIBDIR)
 
-$(LIBRARY): $(OBJECTS) | lib
+uninstall:
+	$(RM) $(RMFLAGS) -r $(INSTALLINCLUDEDIR)
+	$(RM) $(RMFLAGS) $(INSTALLLIBDIR)/$(LIBNAME)
+
+$(LIBRARY): $(OBJECTS) | $(LIBDIR)
 	$(AR) $(ARFLAGS) $(LIBRARY) $(OBJECTS)
 
-obj/%.o: src/%.c | obj
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-lib:
-	@$(MKDIR) $(MKDIRFLAGS) lib
+$(LIBDIR):
+	@$(MKDIR) $(MKDIRFLAGS) $(LIBDIR)
 
-obj:
-	@$(MKDIR) $(MKDIRFLAGS) obj
+$(OBJDIR):
+	@$(MKDIR) $(MKDIRFLAGS) $(OBJDIR)
