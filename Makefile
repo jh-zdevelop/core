@@ -28,6 +28,7 @@ RM=rm
 MKDIR=mkdir
 RMDIR=rmdir
 AR=ar
+INSTALL=install
 
 # flags
 CFLAGS=-Wall -O2 -I./include/core
@@ -51,6 +52,11 @@ clean:
 	$(RM) $(LIBRARY) $(OBJECTS)
 	@$(RMDIR) $(RMDIRFLAGS) lib
 	@$(RMDIR) $(RMDIRFLAGS) obj
+
+install: $(LIBRARY)
+	$(INSTALL) -d /usr/local/include/core
+	$(INSTALL) -cp -m 0644 ./include/core/*.h /usr/local/include/core
+	$(INSTALL) -cp -m 0644 $(LIBRARY) /usr/local/lib
 
 $(LIBRARY): $(OBJECTS) | lib
 	$(AR) $(ARFLAGS) $(LIBRARY) $(OBJECTS)
